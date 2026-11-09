@@ -80,11 +80,20 @@ if not shutil.which("xorriso"):
 #
 # The installer insists on a regular user as well as root; it gets the same
 # password. Every builder's root password is anyvm.org (VM_ROOT_PASSWORD).
+#
+# keymap/keyboard: both must be set. Without keyboard=, libexec/hyprbsd/
+# desktop derives the XKB layout from `sysrc -n keymap`, which prints "NO"
+# when rc.conf has no keymap (the rc.conf default), and writes
+# layout = "NO" into /usr/local/etc/hyprbsd/keyboard.lua and the user's
+# ~/.config/hypr/keyboard.lua; Hyprland then shows "Invalid keyboard layout
+# passed" on the login screen and the desktop.
 _answers = "\n".join([
     "disk=vtbd0",
     "erase=yes",
     "hostname=hyprbsd",
     "timezone=UTC",
+    "keymap=us.kbd",
+    "keyboard=us",
     "network=dhcp",
     "username=anyvm",
     "fullname=anyvm",
