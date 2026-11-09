@@ -1,0 +1,48 @@
+name: "Manual"
+on:
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-26.04
+    env:
+      DEBUG: 1
+      NGROK_TOKEN : ${{ secrets.NGROK_TOKEN }}
+    steps:
+    - uses: actions/checkout@v7
+    # Same Python as build.yml's build job (see the note there).
+    - uses: actions/setup-python@v7
+      if: ${{ '' != '' }}
+      with:
+        python-version: ''
+    - name: Creating web console
+      uses: anyvm-org/cf-tunnel@v0
+      id: tunnel
+      with:
+        protocol: http
+        port: 8000
+    - name: Run vnc tunnel
+      id: test
+      uses: anyvm-org/ngrok-tunnel@v0
+      with:
+        protocol: tcp
+        port: 5900
+    - name: Sleep
+      run: |
+        for i in $(seq 1 10) ; do echo $i; sleep 1; done
+        latest=$(cat $(ls conf/hyprbsd-*.conf | tail -1) | grep VM_RELEASE | cut -d = -f 2)
+        echo "please loging to ssh below, and run:"
+        echo "============================="
+        echo "python3 build.py conf/hyprbsd-$latest.conf"
+        echo "============================="
+        touch /tmp/keepalive
+
+    - uses: neilpang/debugger-action@master
+
+
+
+
+
+
+
