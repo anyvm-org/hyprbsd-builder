@@ -1,0 +1,51 @@
+
+
+
+
+
+
+
+
+service pf onestop
+sysrc pf_enable="NO"
+
+
+sysrc sshd_enable="YES"
+
+service sshd start
+
+
+
+
+echo '' >>  /etc/ssh/sshd_config
+
+echo 'PermitRootLogin yes' >>  /etc/ssh/sshd_config
+
+echo 'PermitEmptyPasswords yes' >> /etc/ssh/sshd_config
+
+echo 'PasswordAuthentication yes'  >> /etc/ssh/sshd_config
+
+echo 'AcceptEnv   *'  >> /etc/ssh/sshd_config
+
+echo 'UseDNS no'  >> /etc/ssh/sshd_config
+
+mkdir -p ~/.ssh
+
+chmod 700 ~/.ssh
+
+rm -f ~/.ssh/id_rsa
+
+ssh-keygen -t rsa -f ~/.ssh/id_rsa -q -N ''
+
+
+/etc/rc.d/sshd restart
+
+
+
+echo "enable ssh finished."
+
+
+
+
+
+

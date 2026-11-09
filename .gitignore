@@ -1,0 +1,19 @@
+# local build outputs (multi-GB qcow2/zst artifacts; keeping them out of git
+# also keeps them out of any `git stash -u` during pulls)
+build/
+build-out-*/
+build-failed-*/
+build-*.log
+*.qcow2
+*.qcow2.xz
+*.qcow2.zst
+*.iso
+# python bytecode caches (hooks/upstream_check.py imports gendata)
+__pycache__/
+*.pyc
+# build.py runtime leftovers (enablessh.local is regenerated every build)
+enablessh.local
+index.html
+screen.txt
+screen.png
+_screenText.txt
