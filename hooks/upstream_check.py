@@ -9,7 +9,12 @@
 # Source of truth: https://hyprbsd.org/releases/, the project's own release
 # list. Fetched by hand 2026-11-09: every release is named there as
 # "HyprBSD <major>.<minor>[-rc<n>]" (15.1-rc1, 15.1-rc2, 15.1-rc3 at the
-# time) and the current ISO is linked as hyprbsd-<version>.iso.
+# time) and the current ISO was linked as hyprbsd-<version>-rc<n>.iso.
+# Fetched again 2026-11-17, after the final: the release is named
+# "HyprBSD 15.1-RELEASE", its ISO is hyprbsd-15.1-RELEASE.iso, and only the
+# current release's ISO is linked (the rc ISOs are no longer). A final ISO
+# therefore carries a "-RELEASE" suffix; a bare hyprbsd-<version>.iso is
+# still accepted in case upstream drops the suffix again.
 #
 # Release candidates are deliberately NOT reported. conf/hyprbsd-15.1.conf
 # is already named for the final release and only its URL pins rc media;
@@ -34,14 +39,18 @@ URL = "https://hyprbsd.org/releases/"
 TIMEOUT = 60
 USER_AGENT = "anyvm-org-upstream-watcher/1.0"
 
-# "HyprBSD 15.1-rc3" / "HyprBSD 15.1": the release names, used only as the
-# page-shape sanity check.
-NAME_PATTERN = re.compile(r"HyprBSD (\d+\.\d+)(-rc\d+)?\b", re.I)
-# "hyprbsd-15.1-rc3.iso" / "hyprbsd-15.1.iso": the downloadable media. A
-# final is reported only when its ISO is linked -- prose that merely says
-# "HyprBSD 15.1" is not a release anyone can build from. Group 1 is the
-# version as conf VM_RELEASE spells it, group 2 the optional rc suffix.
-ISO_PATTERN = re.compile(r"hyprbsd-(\d+\.\d+)(-rc\d+)?\.iso\b")
+# "HyprBSD 15.1-rc3" / "HyprBSD 15.1-RELEASE": the release names, used only
+# as the page-shape sanity check.
+NAME_PATTERN = re.compile(r"HyprBSD (\d+\.\d+)(-rc\d+|-RELEASE)?\b", re.I)
+# "hyprbsd-15.1-rc3.iso" / "hyprbsd-15.1-RELEASE.iso" (or a bare
+# "hyprbsd-15.1.iso"): the downloadable media. A final is reported only
+# when its ISO is linked -- prose that merely says "HyprBSD 15.1" is not a
+# release anyone can build from. Group 1 is the version as conf VM_RELEASE
+# spells it, group 2 the rc suffix (empty for a final; "-RELEASE" is not
+# captured, so it reads as a final). The .iso.sha256 / .iso.sha256.asc
+# links match too (\b holds before the "."); that is harmless, since the
+# versions are de-duplicated.
+ISO_PATTERN = re.compile(r"hyprbsd-(\d+\.\d+)(?:(-rc\d+)|-RELEASE)?\.iso\b")
 
 
 def resolve_natural_key():
